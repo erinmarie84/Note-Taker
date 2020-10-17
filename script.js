@@ -1,30 +1,15 @@
-const fs = require('fs');
 const express = require('express');
-const http = require('http');
-const { response } = require('express');
-const PORT = 8080;
+const APIroutes = require('./routes/APIroutes.js');
+const HTMLroutes = require('./routes/HTMLroutes.js');
 
-var app = express();
+const app = express();
+const PORT = process.env.PORT || 9000;
 
-const handler = (request, response) => {
-    fs.readFile(`${__dirname}/index.html`);
-    (err, data) => {
-        if (err) {
-            response.writeHead(404);
-            response.end('Not Found!');
-        }
-    }
-};
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
-app.get("/notes", function(req, res) {
-    res.send('');
-})
+app.use(express.static('public'));
+app.use('/api', APIroutes);
+app.use('/', HTMLroutes);
 
-app.get("/api/notes", function(req, res) {
-    
-})
-
-
-
-const server = http.createServer(handler);
-server.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`))
